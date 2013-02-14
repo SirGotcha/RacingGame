@@ -21,7 +21,9 @@ public class SpriteLib {
 	private SpriteLib() {
 		sprites = new HashMap<URL, BufferedImage>();
 	}
-	
+	/*
+	 * Get Sprite Methoden sind verschiedene Methoden zum Laden des Bildes als Sprite
+	 */
 	public BufferedImage getSprite(URL location) {
 		
 		BufferedImage pic = null;

@@ -1,14 +1,12 @@
 package sprite;
 
-import game.Drawable;
 import game.GamePanel;
-import game.Movable;
 
 import java.awt.Graphics;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
-public abstract class Sprite extends Rectangle2D.Double implements Drawable, Movable{
+public abstract class Sprite extends Rectangle2D.Double {
 
 	private static final long	serialVersionUID	= 1L;
 	long delay;
@@ -24,7 +22,7 @@ public abstract class Sprite extends Rectangle2D.Double implements Drawable, Mov
 	int loop_to;
 	
 	public boolean remove;
-	
+	//Sprite in Panel platzieren
 	public Sprite(BufferedImage[] i, double x, double y, long delay, GamePanel p ){
 		pics = i;
 		this.x = x;
@@ -65,7 +63,7 @@ public abstract class Sprite extends Rectangle2D.Double implements Drawable, Mov
 		loop_to   = to;
 		currentpic = from;
 	}
-	
+	//x und y werte ändern
 	public void move(long delta) {
 		
     if(dx!=0){
@@ -95,6 +93,7 @@ public abstract class Sprite extends Rectangle2D.Double implements Drawable, Mov
   		}
     	}
 	}
+	//x und y werte ändern
 	public void move_wall(long delta) {
 		
 	    if(dx!=0){
@@ -106,7 +105,7 @@ public abstract class Sprite extends Rectangle2D.Double implements Drawable, Mov
 	    }
 	    
 	}
-	
+	//Speed anpassen
 	public double getHorizontalSpeed() {
 		return dx;
 	}
@@ -122,10 +121,10 @@ public abstract class Sprite extends Rectangle2D.Double implements Drawable, Mov
 	public void setVerticalSpeed(double dy) {
 		this.dy = dy;
 	}
-
+	//
 	public abstract boolean collidedWith(Sprite s);
-	
-  public boolean checkOpaqueColorCollisions(Sprite s){
+	//Alpha Wert Kollision
+	public boolean checkOpaqueColorCollisions(Sprite s){
     
     Rectangle2D.Double cut = (Double) this.createIntersection(s);
     
@@ -158,8 +157,8 @@ public abstract class Sprite extends Rectangle2D.Double implements Drawable, Mov
     
     return false;
   }
-  
-  protected Rectangle2D.Double getSubRec(Rectangle2D.Double source, Rectangle2D.Double part) {
+	//Rechteck um Objekt
+	protected Rectangle2D.Double getSubRec(Rectangle2D.Double source, Rectangle2D.Double part) {
     
     //Rechtecke erzeugen
     Rectangle2D.Double sub = new Rectangle2D.Double();
@@ -182,8 +181,8 @@ public abstract class Sprite extends Rectangle2D.Double implements Drawable, Mov
     
     return sub;
   }
-  
-  protected boolean isOpaque(int rgb) {
+	//ALpha Wert ermitteln
+	protected boolean isOpaque(int rgb) {
 
     int alpha = (rgb >> 24) & 0xff;  
     //red   = (rgb >> 16) & 0xff;  
