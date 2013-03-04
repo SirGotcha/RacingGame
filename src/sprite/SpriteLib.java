@@ -24,49 +24,8 @@ public class SpriteLib {
 	/*
 	 * Get Sprite Methoden sind verschiedene Methoden zum Laden des Bildes als Sprite
 	 */
-	public BufferedImage getSprite(URL location) {
-		
-		BufferedImage pic = null;
-		
-		pic = (BufferedImage) sprites.get(location);
-		
-		if (pic != null) {
-			return pic;
-		}
-		
-		try {
-			pic = ImageIO.read(location);
-		} catch (IOException e1) {
-			System.out.println("Fehler beim Image laden: " + e1);
-			return null;
-		}
-		
-		sprites.put(location, pic);
-		
-		return pic;
-	}
-
-	public BufferedImage getSprite(String path) {
-		
-		BufferedImage pic = null;
-		URL location = getURLfromRessource(path);
-		
-		pic = (BufferedImage) sprites.get(location);
-		
-		if (pic != null) {
-			return pic;
-		}
-		
-		try {
-			pic = ImageIO.read(location);
-		} catch (IOException e1) {
-			System.out.println("Fehler beim Image laden: " + e1);
-			return null;
-		}
-		
-		sprites.put(location, pic);
-		
-		return pic;
+	public URL getURLfromRessource(String path){
+		return getClass().getClassLoader().getResource(path);
 	}
 	
 	public BufferedImage[] getSprite(String path, int column, int row) {
@@ -100,41 +59,6 @@ public class SpriteLib {
 			}
 		}
 		return pics;
-	}
-	
-	public BufferedImage[] getSprite(URL location, int column, int row) {
-		
-		BufferedImage source = null;
-		
-		source = (BufferedImage) sprites.get(location);
-		
-		if (source == null) {
-			try {
-				source = ImageIO.read(location);
-			} catch (IOException e1) {
-				System.out.println(e1);
-				return null;
-			}
-			sprites.put(location, source);
-		}
-	
-		int width = source.getWidth() / column;
-		int height = source.getHeight() /row;
-		
-		BufferedImage[] pics = new BufferedImage[column + row];
-		int count = 0;
-		
-		for (int n = 0; n < row; n++) {
-			for (int i = 0; i < column; i++) {
-				pics[count] = source.getSubimage(i * width, n * height, width, height);
-				count++;
-			}
-		}
-		return pics;
-	}
-	
-	public URL getURLfromRessource(String path){
-		return getClass().getClassLoader().getResource(path);
 	}
 	
 }

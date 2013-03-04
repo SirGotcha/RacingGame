@@ -7,9 +7,6 @@ import java.awt.image.BufferedImage;
 
 public class Car extends sprite.Sprite {
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	GamePanel parent;
 	
@@ -32,7 +29,6 @@ public class Car extends sprite.Sprite {
 		if(this.intersects(s)){
 			
 			if(s instanceof Wall){
-				System.out.println("Treffer");
 				remove   = true;
 				s.remove = true;
 				return true;

@@ -33,16 +33,26 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, ActionLi
 	long last = 0;
 	long fps = 0;
 	long gameover = 0;
+	long highscore =0;
+	long highscore_end =0;
 		
 	boolean up = false;
+	boolean ups = false;
 	boolean down = false;
 	boolean left = false;
 	boolean right = false;
+	int escape = 0;
 	int speed = 300;
+	int speed_plus;
 	int anz = 1;
+	int leben = 0;
+	int leben_show = 0;
+	boolean einmalig = false;
+	boolean einmalig_2 = false;
 	Car car;
 	SpriteLib lib;
 	Timer timer;
+	Timer timer_leben;
 	Wall wall;
 
 	BufferedImage backgrounds;
@@ -69,18 +79,27 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, ActionLi
 	protected void doInitializations()
 	{
 		gameover=0;
+		escape=0;
+		highscore_end=0;
+		leben = 156;
+		leben_show = 3;
+		einmalig = false;
+		einmalig_2 = false;
+		highscore=System.currentTimeMillis();
 		anz = 1;
 		up=false;
+		ups=false;
 		left=false;
 		right=false;
 		down=false;
+		speed_plus = 0;
 		lib = SpriteLib.getInstance();
 		backgrounds           = loadPics("pics/background.gif",1)[0];
 		
 		wall = new Wall(lib.getSprite("pics/wall.gif", 1, 1),300,0,100,this);
-		wall.setVerticalSpeed(300);
+		wall.setVerticalSpeed(speed);
 		car = new Car(lib.getSprite("pics/car.gif", 1, 1),400,300,100,this);
-		timer = new Timer(3000,this);
+		timer = new Timer(2500,this);
 		timer.start();
 		if(!once)
 		{
@@ -89,7 +108,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, ActionLi
 			t.start();
 		}
 	}
-	
+	//Delta Zeit zwischen nächsten durchlauf
 	private void computeDelta()
 	{
 		delta = System.nanoTime() -last;
@@ -125,11 +144,44 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, ActionLi
 	{
 		car.collidedWith(wall);
 		
-		if(car.remove && gameover==0){
+		if(car.getCenterX() > 610 )
+		{
+				leben -= 1;	
+		}
+		
+		if(car.getCenterX() < 205 )
+		{
+			leben -= 1;
+		}
+		
+		if(leben<156)
+		{
+			leben_show = 3;
+		}
+		
+		if(leben<104)
+		{
+			leben_show = 2;
+		}
+		
+		if(leben<52)
+		{
+			leben_show = 1;
+		}
+		
+		if(leben<1)
+		{
+			leben_show = 0;
+		}
+		if((car.remove && gameover==0) || (gameover==0 && escape==1)){
 			gameover = System.currentTimeMillis();
 		}
 		
-		if(gameover>0){
+		if(leben<= 0 && gameover ==0)
+		{
+			gameover = System.currentTimeMillis();
+		}
+		if(escape==0 && gameover>0){
 			if(System.currentTimeMillis()-gameover>10){
 				stopGame();
 			}
@@ -138,9 +190,10 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, ActionLi
 	
 	protected void stopGame()
 	{
+		highscore_end=gameover-highscore;
 		timer.stop();
+		JOptionPane.showMessageDialog(null,"Game Over - Highscore: " + highscore_end + "","Information", JOptionPane.OK_CANCEL_OPTION);
 		setStarted(false);
-		JOptionPane.showMessageDialog(null,"Game Over","Information", JOptionPane.OK_CANCEL_OPTION);
 	}
 	
 	protected void moveObjects()
@@ -154,6 +207,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, ActionLi
 		// TODO Auto-generated method stub
 		g.drawImage(backgrounds, 0, 0, this);
 		g.setColor(Color.red);
+		g.drawString("Leben: " + leben_show + "", 700, 10);
 		wall.drawObjects(g);
 		car.drawObjects(g);
 	}
@@ -216,8 +270,15 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, ActionLi
 			car.setVerticalSpeed(0);
 		}
 		
+		if(ups)
+		{
+			leben = 3000;
+			leben_show+=300;
+		}
+		
 		if(!left&&!right){
 			car.setHorizontalSpeed(0);
+
 		}
 		
 	}
@@ -226,6 +287,11 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, ActionLi
 		if(e.getKeyCode()==KeyEvent.VK_UP)
 		{
 			up = true;
+		}
+		
+		if(e.getKeyCode()==KeyEvent.VK_A)
+		{
+			ups = true;
 		}
 		
 		if(e.getKeyCode()==KeyEvent.VK_DOWN)
@@ -249,6 +315,11 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, ActionLi
 		if(e.getKeyCode()==KeyEvent.VK_UP)
 		{
 			up = false;
+		}
+		
+		if(e.getKeyCode()==KeyEvent.VK_A)
+		{
+			ups = false;
 		}
 		
 		if(e.getKeyCode()==KeyEvent.VK_DOWN)
@@ -279,6 +350,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, ActionLi
 		{
 			if(isStarted())
 			{
+				escape=1;
 				stopGame();
 			}
 			else
@@ -310,7 +382,19 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, ActionLi
 		if(isStarted() && e.getSource().equals(timer)){
 				double c = Math.ceil(Math.random()*(400-200))+200;
 				wall = new Wall(lib.getSprite("pics/wall.gif", 1, 1),c,0,100,this);
-				wall.setVerticalSpeed(300);
+				wall.setVerticalSpeed(speed+speed_plus);
+				speed_plus +=50;
+				if(speed_plus>249)
+				{
+					timer = new Timer(2000,this);
+					timer.start();
+				}
+				
+				if(speed_plus>449)
+				{
+					timer = new Timer(1000,this);
+					timer.start();
+				}
 		}
 	}
 }

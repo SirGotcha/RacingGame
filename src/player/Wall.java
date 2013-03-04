@@ -7,9 +7,6 @@ import java.awt.image.BufferedImage;
 
 public class Wall extends sprite.Sprite {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	public Wall(BufferedImage[] i, double x, double y, long delay, GamePanel gamePanel) {
