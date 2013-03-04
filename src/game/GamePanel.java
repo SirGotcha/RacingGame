@@ -57,9 +57,11 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, ActionLi
 
 	BufferedImage backgrounds;
 	BufferedImage backgrounds_end;
+	
 
 	public GamePanel (int w, int h)
 	{
+
 		this.setPreferredSize(new Dimension(w,h));
 		this.setBackground(Color.BLUE);
 		JFrame frame = new JFrame("Autorennen");
