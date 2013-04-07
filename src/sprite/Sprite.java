@@ -87,9 +87,9 @@ public abstract class Sprite extends Rectangle2D.Double {
   			y = 1;
   		}
   		
-  		if(y>573)
+  		if(y>523)
   		{
-  			y = 568;
+  			y = 518;
   		}
     	}
 	}

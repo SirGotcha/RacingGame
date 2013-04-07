@@ -2,6 +2,7 @@ package game;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,9 +13,12 @@ import java.io.IOException;
 import java.net.URL;
 
 import javax.imageio.ImageIO;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.Timer;
 
 import player.Car;
@@ -57,23 +61,74 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, ActionLi
 
 	BufferedImage backgrounds;
 	BufferedImage backgrounds_end;
+	JRadioButton rbcar = new JRadioButton( "Standart Wagen " );
+	JRadioButton rbmot = new JRadioButton( "Motorrad" );
 	
+	JRadioButton rbaut = new JRadioButton( "Auto" );
+	JRadioButton rbfer = new JRadioButton( "Ferrari" );
+	JRadioButton rbpan = new JRadioButton( "Panzer" );
+	JRadioButton rbjeep = new JRadioButton( "Jeep" );
+	JRadioButton rbpol = new JRadioButton( "Polizeiwagen" );
+	
+	ButtonGroup g = new ButtonGroup();
+	JButton Weiter = new JButton( "Start" );
 
 	public GamePanel (int w, int h)
 	{
 
-		this.setPreferredSize(new Dimension(w,h));
+		final JFrame frame0 = new JFrame("Highway Runner Auswahl");
+		frame0.setLocation(100,100);
+		frame0.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame0.setVisible(true);
+		frame0.setLayout(new FlowLayout());
+		
+		final JFrame frame = new JFrame("Highway Runner");
+		frame.setPreferredSize(new Dimension(w,h));
 		this.setBackground(Color.BLUE);
-		JFrame frame = new JFrame("Autorennen");
 		frame.setLocation(100,100);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		
+		
+	    frame0.add(Weiter);
+	    frame0.add(rbcar);
+	    frame0.add(rbmot);
+	    frame0.add(rbaut);
+	    frame0.add(rbfer);
+	    frame0.add(rbpan);
+	    frame0.add(rbjeep);
+	    frame0.add(rbpol);
+	    rbcar.setSelected( true );
+	    g.add( rbcar );
+	    g.add( rbmot );
+	    g.add( rbaut );
+	    g.add( rbfer );
+	    g.add( rbpan );
+	    g.add( rbjeep );
+	    g.add( rbpol );
+	    frame0.add(this);
+	    frame0.pack();
+	    ActionListener al = new ActionListener() {
+	        public void actionPerformed( ActionEvent e ) {
+	        	frame0.setVisible(false);
+	        	frame.setVisible(true);
+	        }
+	      };
+	      Weiter.addActionListener( al );
+	      
+	      
+
+		
 		frame.addKeyListener(this);
 		frame.add(this);
 		frame.pack();
-		frame.setVisible(true);
 		doInitializations();
-	}
+		
+		
+
 	
+	}
+
 	public static void main(String[] args){
 		new GamePanel(800,600);
 	}
@@ -100,7 +155,32 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, ActionLi
 		
 		wall = new Wall(lib.getSprite("pics/wall.gif", 1, 1),300,0,100,this);
 		wall.setVerticalSpeed(speed);
-		car = new Car(lib.getSprite("pics/car.gif", 1, 1),400,300,100,this);
+		
+		if(rbcar.isSelected()) {
+			car = new Car(lib.getSprite("pics/car.gif", 1, 1),400,300,100,this);
+		}
+		else if(rbmot.isSelected()) {
+			car = new Car(lib.getSprite("pics/motorad.gif", 1, 1),400,300,100,this);
+		}
+		else if(rbaut.isSelected()) {
+			car = new Car(lib.getSprite("pics/auto.png", 1, 1),400,300,100,this);
+		}
+		else if(rbfer.isSelected()) {
+			car = new Car(lib.getSprite("pics/Ferrari.png", 1, 1),400,300,100,this);
+		}
+		else if(rbpan.isSelected()) {
+			car = new Car(lib.getSprite("pics/panzer.png", 1, 1),400,300,100,this);
+		}
+		else if(rbjeep.isSelected()) {
+			car = new Car(lib.getSprite("pics/Jeep.png", 1, 1),400,300,100,this);
+		}
+		else if(rbpol.isSelected()) {
+			car = new Car(lib.getSprite("pics/Polizeiauto.gif", 1, 1),400,300,100,this);
+		}
+
+		
+		
+		
 		timer = new Timer(2500,this);
 		timer.start();
 		if(!once)
@@ -218,9 +298,12 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, ActionLi
 	{
 		super.paintComponent(g);
 		
+		
 		g.setColor(Color.red);
 		g.drawString("FPS: " + Long.toString(fps), 20, 10);
+		g.drawString("Weiche den Hindernissen aus und meide das Gras!", 250, 200);
 		g.drawString("Zu Starten Enter Drücken", 300, 300);
+		
 		if(!isStarted())
 		{
 			return;
