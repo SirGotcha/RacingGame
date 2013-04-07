@@ -96,7 +96,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, ActionLi
 		down=false;
 		speed_plus = 0;
 		lib = SpriteLib.getInstance();
-		backgrounds           = loadPics("pics/Straﬂe_normal.gif",1)[0];
+		backgrounds           = loadPics("pics/background.gif",1)[0];
 		
 		wall = new Wall(lib.getSprite("pics/wall.gif", 1, 1),300,0,100,this);
 		wall.setVerticalSpeed(speed);
