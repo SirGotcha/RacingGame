@@ -1,5 +1,6 @@
 package game;
-
+//Libary's
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -14,18 +15,20 @@ import java.net.URL;
 
 import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.Timer;
-
+//Andere Java Dateien einbinden
 import player.Car;
 import player.Wall;
 import sprite.SpriteLib;
 
-
+//Klasse Game Panel erstellen, mit KeyListenern (Tastendrücke erkennen), ActionListenern (Actionen bei z.B. Buttondruck) und Runnable (ermöglicht Dauerschleife für Spiel)
 public class GamePanel extends JPanel implements Runnable, KeyListener, ActionListener
 {
 	private static final long serialVersionUID = 1L;
@@ -46,6 +49,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, ActionLi
 	boolean left = false;
 	boolean right = false;
 	int escape = 0;
+	//Geschwindigkeit der Barrieren
 	int speed = 300;
 	int speed_plus;
 	int anz = 1;
@@ -61,9 +65,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, ActionLi
 
 	BufferedImage backgrounds;
 	BufferedImage backgrounds_end;
-	JRadioButton rbcar = new JRadioButton( "Standart Wagen " );
+	//Radio Buttons für die Auswahl des Autos
 	JRadioButton rbmot = new JRadioButton( "Motorrad" );
-	
 	JRadioButton rbaut = new JRadioButton( "Auto" );
 	JRadioButton rbfer = new JRadioButton( "Ferrari" );
 	JRadioButton rbpan = new JRadioButton( "Panzer" );
@@ -72,16 +75,18 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, ActionLi
 	
 	ButtonGroup g = new ButtonGroup();
 	JButton Weiter = new JButton( "Start" );
+	JPanel panel1 = new JPanel();
+	JPanel panel2 = new JPanel();
 
 	public GamePanel (int w, int h)
 	{
-
+		//Erster Frame mit 2 Paneln für Autoauswahl
 		final JFrame frame0 = new JFrame("Highway Runner Auswahl");
 		frame0.setLocation(100,100);
 		frame0.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame0.setVisible(true);
-		frame0.setLayout(new FlowLayout());
 		
+		//Zweiter Frame mir Regeln und Start
 		final JFrame frame = new JFrame("Highway Runner");
 		frame.setPreferredSize(new Dimension(w,h));
 		this.setBackground(Color.BLUE);
@@ -90,22 +95,53 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, ActionLi
 		
 		
 		
-	    frame0.add(Weiter);
-	    frame0.add(rbcar);
-	    frame0.add(rbmot);
-	    frame0.add(rbaut);
-	    frame0.add(rbfer);
-	    frame0.add(rbpan);
-	    frame0.add(rbjeep);
-	    frame0.add(rbpol);
-	    rbcar.setSelected( true );
-	    g.add( rbcar );
+		panel1.setLayout( new FlowLayout(FlowLayout.RIGHT, 45, 10) );
+		ImageIcon icon = new ImageIcon(getClass().getClassLoader().getResource("pics/motorad.gif"));
+		JLabel l1 = new JLabel( icon );
+		
+		ImageIcon icon2 = new ImageIcon(getClass().getClassLoader().getResource("pics/auto.png"));
+		JLabel l2 = new JLabel( icon2 );
+		
+		ImageIcon icon3 = new ImageIcon(getClass().getClassLoader().getResource("pics/Ferrari.png" ));
+		JLabel l3 = new JLabel( icon3 );
+		
+		ImageIcon icon4 = new ImageIcon(getClass().getClassLoader().getResource("pics/panzer.png" ));
+		JLabel l4 = new JLabel( icon4 );
+		
+		ImageIcon icon5 = new ImageIcon(getClass().getClassLoader().getResource("pics/Jeep.png"));
+		JLabel l5 = new JLabel( icon5 );
+		
+		ImageIcon icon6 = new ImageIcon(getClass().getClassLoader().getResource("pics/Polizeiauto.gif"));
+		JLabel l6 = new JLabel( icon6 );
+		
+		
+		panel1.add(l1);
+		panel1.add(l2);
+		panel1.add(l3);
+		panel1.add(l4);
+		panel1.add(l5);
+		panel1.add(l6);
+		
+		
+		
+		panel2.add(rbmot);
+		panel2.add(Weiter);
+		panel2.add(rbmot);
+		panel2.add(rbaut);
+		panel2.add(rbfer);
+		panel2.add(rbpan);
+		panel2.add(rbjeep);
+		panel2.add(rbpol);
+		
+	    rbaut.setSelected( true );
 	    g.add( rbmot );
 	    g.add( rbaut );
 	    g.add( rbfer );
 	    g.add( rbpan );
 	    g.add( rbjeep );
 	    g.add( rbpol );
+	    frame0.add( panel1,BorderLayout.PAGE_START);
+	    frame0.add( panel2,BorderLayout.PAGE_END);
 	    frame0.add(this);
 	    frame0.pack();
 	    ActionListener al = new ActionListener() {
@@ -135,6 +171,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, ActionLi
 	
 	protected void doInitializations()
 	{
+		//Variablen für Start des Spiels vorbereiten
 		gameover=0;
 		escape=0;
 		highscore_end=0;
@@ -150,16 +187,15 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, ActionLi
 		right=false;
 		down=false;
 		speed_plus = 0;
+		//Mit Hilfe der Sprite Klasse Bilder für auto, barrieren und hintergrund erzeugen etc.
 		lib = SpriteLib.getInstance();
 		backgrounds           = loadPics("pics/background.gif",1)[0];
 		
 		wall = new Wall(lib.getSprite("pics/wall.gif", 1, 1),300,0,100,this);
 		wall.setVerticalSpeed(speed);
 		
-		if(rbcar.isSelected()) {
-			car = new Car(lib.getSprite("pics/car.gif", 1, 1),400,300,100,this);
-		}
-		else if(rbmot.isSelected()) {
+
+		if(rbmot.isSelected()) {
 			car = new Car(lib.getSprite("pics/motorad.gif", 1, 1),400,300,100,this);
 		}
 		else if(rbaut.isSelected()) {
@@ -180,7 +216,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, ActionLi
 
 		
 		
-		
+		//Timer für Barrieren
 		timer = new Timer(2500,this);
 		timer.start();
 		if(!once)
@@ -198,7 +234,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, ActionLi
 		
 		fps = ((long) 1e9)/delta;	
 	}
-	
+	//Run schleife - Malt Bilder immer neu
 	public void run()
 	{
 		while(game_running)
@@ -224,6 +260,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, ActionLi
 	
 	private void doLogic()
 	{
+		//Abfragen für Collision mit Barriere, mit Rasen, Lebensberechnung und Verloren (Zeitstop für Highscore)
 		car.collidedWith(wall);
 		
 		if(car.getCenterX() > 610 )
@@ -235,26 +272,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, ActionLi
 		{
 			leben -= 1;
 		}
-		
-		if(leben<156)
-		{
-			leben_show = 3;
-		}
-		
-		if(leben<104)
-		{
-			leben_show = 2;
-		}
-		
-		if(leben<52)
-		{
-			leben_show = 1;
-		}
-		
-		if(leben<1)
-		{
-			leben_show = 0;
-		}
+		// Da bild pro minute circa 50-60 mal neu gemalt wird, ist 50-60 mal pro minute ein kontakt mit dem Gras => so umständlich gemacht
+		leben_show = leben/52;
 		if((car.remove && gameover==0) || (gameover==0 && escape==1)){
 			gameover = System.currentTimeMillis();
 		}
@@ -269,7 +288,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, ActionLi
 			}
 		}
 	}
-	
+	//Highscore berechnen, Timer stop, Game OVer Message 
 	protected void stopGame()
 	{
 		highscore_end=gameover-highscore;
@@ -278,12 +297,14 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, ActionLi
 		setStarted(false);
 	}
 	
+	// Aufruf der Methoden zum bewegen der AUtos und Barrieren
 	protected void moveObjects()
 	{
 		car.move(delta);
 		wall.move_wall(delta);
 	}
 	
+	//Malen aller Komponenten
 	@Override
 	public void paintAll(Graphics g) {
 		// TODO Auto-generated method stub
@@ -311,7 +332,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, ActionLi
 		
 		paintAll(g);
 	}
-	
+	//Methoden zum Erzeugen einer Animation ==> Funktioniert aber noch nicht richtig :D
 	protected BufferedImage[] loadPics(String path, int pics)
 	{
 		BufferedImage[] anim = new BufferedImage[pics];
@@ -332,6 +353,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, ActionLi
 		return anim;
 	}
 	
+	//Was tun bei bestimmten Tastendruck
 	protected void checkKeys() {
 		// TODO Auto-generated method stub
 
@@ -367,6 +389,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, ActionLi
 		}
 		
 	}
+	//Abfragen der gedrückten Tasten
 	public void keyPressed(KeyEvent e)
 	{
 		if(e.getKeyCode()==KeyEvent.VK_UP)
@@ -462,6 +485,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, ActionLi
 		this.started = started;
 	}
 	
+	//Action für Immer schneller werdende Wälle
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(isStarted() && e.getSource().equals(timer)){

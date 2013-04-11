@@ -15,6 +15,7 @@ public class Wall extends sprite.Sprite {
 		// TODO Auto-generated constructor stub
 	}
 
+	//Methoden zur Kollisionsabfrage
 	@Override
 	public boolean collidedWith(sprite.Sprite s) {
 

@@ -19,6 +19,7 @@ public class Car extends sprite.Sprite {
 		super.doLogic(delta);
 	}
 
+	//Methoden zur Kollisionsabfrage
 	@Override
 	public boolean collidedWith(sprite.Sprite s) {
 

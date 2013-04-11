@@ -24,12 +24,13 @@ public class SpriteLib {
 	/*
 	 * Get Sprite Methoden sind verschiedene Methoden zum Laden des Bildes als Sprite
 	 */
+	//URl der Dateien holen
 	public URL getURLfromRessource(String path){
 		return getClass().getClassLoader().getResource(path);
 	}
-	
+	//Bilder etc laden
 	public BufferedImage[] getSprite(String path, int column, int row) {
-		
+		//Pfad der Bilddatei Holen
 		URL location = getURLfromRessource(path);
 		
 		BufferedImage source = null;
